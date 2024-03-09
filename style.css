@@ -113,7 +113,7 @@ html {
 }
 
 .bg {
-  background-image: url("/벚꽃배경1.jpg");
+  background-image: url("./벚꽃배경1.jpg");
   width: 360px;
   background-size: cover;
   background-position: center;

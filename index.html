@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>2024 신년계획 버킷리스트</title>
+  <style>
+    .bg {
+      background-image: : url("./벚꽃배경2.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      margin: 0 auto;
+      background-color: #141617;
+    }
+
+    .title {
+      margin-top: 50px;
+      color: #E8344E;
+    }
+
+    .msg {
+      color: white;
+      margin-bottom: 48px;
+    }
+  </style>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body class="bg center">
+  <audio id="bgMusic" src="bgm.mp3" autoplay loop></audio>
+  <button id="playButton">Play</button>
+  <h1 class="title">SPARTHON Bucket List</h1>
+  <p class="msg">꿈은 꾸는 것이 아닌, 이루는 것이다!</p>
+  <div class="bucket-container">
+    <input type="text" id="bucketInput" class="userInput" placeholder="내용을 입력하세요">
+    <button onclick="saveBucketList()" class="button">
+      <img src="/Bucket_Plus.png" alt="버킷리스트 저장">
+    </button>
+  </div>
+  <div id="bucketList" class="flex-row wrap" style="width: 600px">
+    <div class="bucket img1 center">
+      앱 출시하기
+      <span class="delete-button" onclick="deleteBucket(this)">
+      </span>
+    </div>
+    <div class="bucket img2 center">10킬로그램 감량</div>
+    <div class="bucket img3 center">나만의 게임 만들기</div>
+    <div class="bucket img4 center">영어 회화 배우기</div>
+    <div class="bucket img5 center">정보처리기사 자격증 취득</div>
+    <!-- <div class="bucket img6 center">이직 성공!</div> -->
+  </div>
+  <script>
+    var bucketList = []; // 버킷리스트를 저장할 배열
+    var imgNumbers = [5, 2, 4, 3, 1]; // 사용될 이미지 번호
+    var imgIndex = 4;
+    // 페이지 로드 시 이전 상태 복원
+    document.addEventListener("DOMContentLoaded", (event) => {
+      const buckets = document.querySelectorAll(".bucket");
+      buckets.forEach((bucket, index) => {
+        // 로컬 스토리지에서 상태 읽기
+        const isDone = localStorage.getItem("bucket" + index) === "done";
+        if (isDone) {
+          bucket.classList.add("done");
+        }
+      });
+    });
+
+    // 버킷 리스트 클릭 이벤트
+    const buckets = document.querySelectorAll(".bucket");
+    buckets.forEach((bucket, index) => {
+      bucket.addEventListener("click", function () {
+        // 클래스 토글
+        bucket.classList.toggle("done");
+
+        // 로컬 스토리지에 상태 저장
+        if (bucket.classList.contains("done")) {
+          localStorage.setItem("bucket" + index, "done");
+          alert("달성을 축하합니다!");
+        } else {
+          localStorage.setItem("bucket" + index, "");
+        }
+      });
+    });
+    function saveBucketList() {
+      var inputField = document.getElementById("bucketInput");
+      var bucketItem = inputField.value;
+
+      if (bucketItem.trim() !== "") {
+        bucketList.push(bucketItem); // 버킷리스트를 배열에 추가
+        inputField.value = ""; // 입력 필드 비우기
+        displayBucketList(); // 버킷리스트 화면에 표시
+        imgIndex = (imgIndex + 1) % imgNumbers.length; // 이미지 번호 증가 및 순환
+      }
+    }
+
+    function displayBucketList() {
+      var bucketListContainer = document.getElementById("bucketList");
+
+      var existingHTML = bucketListContainer.innerHTML; // 기존 내용 저장
+
+      bucketListContainer.innerHTML = ""; // 이전 내용 초기화
+
+      // 기존 리스트 추가
+      bucketListContainer.innerHTML += existingHTML;
+
+      // 새로운 리스트 추가
+      var newBucket = document.createElement("div");
+      newBucket.classList.add("bucket");
+      var imgNumber = imgNumbers[imgIndex]; // 이미지 번호 선택
+      newBucket.classList.add("bucket");
+      newBucket.classList.add("img" + imgNumber); // 이미지 번호에 따른 클래스 추가
+      newBucket.classList.add("center");
+      newBucket.textContent = bucketList[bucketList.length - 1]; // 새로 추가된 항목만 표시
+      bucketListContainer.appendChild(newBucket);
+
+      imgIndex = (imgIndex + 1) % imgNumbers.length; // 이미지 번호 증가 및 순환
+    }
+
+    var music = document.getElementById('bgMusic');
+    var playButton = document.getElementById('playButton');
+
+    playButton.addEventListener('click', function () {
+      if (music.paused) {
+        music.play(); // 일시 정지된 음악을 재생합니다.
+        playButton.textContent = 'Play'; // 버튼 텍스트를 "일시 정지"로 변경합니다.
+      } else {
+        music.pause(); // 재생 중인 음악을 일시 정지합니다.
+        playButton.textContent = 'Pause'; // 버튼 텍스트를 "재생"으로 변경합니다.
+      }
+    });
+
+    function deleteBucket(bucket, index) {
+      var bucketListContainer = document.getElementById("bucketList");
+      bucketListContainer.removeChild(bucket); // 해당 버킷 삭제
+      bucketList.splice(index, 1); // 버킷리스트 배열에서 해당 항목 제거
+      displayBucketList(); // 변경된 버킷리스트 다시 표시
+    }
+  </script>
+
+</body>
+
+</html>
